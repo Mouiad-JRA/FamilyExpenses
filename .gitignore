@@ -6,3 +6,4 @@
 /Pipfile
 /.idea/FamilyExpenses.iml
 /.idea/.gitignore
+/db.sqlite3
