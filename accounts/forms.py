@@ -16,17 +16,21 @@ class CustomUserEditForm(UserChangeForm):
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     picture = forms.ImageField(label=_("Picture/Logo"), required=False)
+    family_name = forms.CharField(required=True, max_length=255)
+    is_head = forms.BooleanField(required=True)
 
     class Meta:
         model = User
-        fields = ("username", "email", "picture", "password1", "password2", "family", "head")
+        fields = ("username", "email", "picture", "password1", "password2", "family_name", "is_head")
+        exclude = ("family", "head")
 
     def save(self, commit=True):
         user = super(CustomUserCreationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
-        user.family = self.cleaned_data['family']
-        user.head = self.cleaned_data['head']
-        Family.objects.get_or_create(family_name=user.family)
+        family_name = self.cleaned_data['family_name']
+        family = Family.objects.get_or_create(family_name=family_name)
+        user.family = family
+        user.is_head = self.cleaned_data['is_head']
         if commit:
             user.save()
         return user

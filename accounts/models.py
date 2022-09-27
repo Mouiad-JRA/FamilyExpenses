@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Family(models.Model):
     """ Family Model """
-    family_name = models.CharField(_("Name of Family Name"), blank=True, max_length=255)
+    family_name = models.CharField(_("Name of Family Name"), blank=True, max_length=255, unique=True)
 
 
 class User(AbstractUser):
