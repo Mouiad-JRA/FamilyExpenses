@@ -1,21 +1,15 @@
-
 import os.path
 from pathlib import Path
 
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-
-
 SECRET_KEY = 'django-insecure-_w7$ih&fr7xpkfm!qh7ka4@joc_b#9!%56x5%^)-yg%mylhg#!'
-
 
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -60,8 +54,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'FamilyExpenses.wsgi.application'
 
-
-
+AUTH_USER_MODEL = 'accounts.User'
 
 DATABASES = {
     'default': {
@@ -69,7 +62,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -89,7 +81,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -100,9 +91,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
-
-
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'FamilyExpenses/static')]
