@@ -14,7 +14,7 @@ class User(AbstractUser):
     name = models.CharField(_("Name of User"), blank=True, max_length=255)
     family = models.ForeignKey(Family, on_delete=models.CASCADE, related_name='users')
     picture = models.ImageField(_("Picture"), null=True, blank=True)
-    head = models.OneToOneField(Family, on_delete=models.CASCADE, related_name='familyhead')
+    head = models.OneToOneField(Family, null=True, related_name='familyhead', on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.get_full_name()
