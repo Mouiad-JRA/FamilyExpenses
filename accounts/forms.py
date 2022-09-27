@@ -28,9 +28,12 @@ class CustomUserCreationForm(UserCreationForm):
         user = super(CustomUserCreationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         family_name = self.cleaned_data['family_name']
+        is_head = self.cleaned_data['is_head']
         family = Family.objects.get_or_create(family_name=family_name)
+        if is_head:
+            head = Family.objects.get_or_create(family_name=is_head)
         user.family = family
-        user.is_head = self.cleaned_data['is_head']
+
         if commit:
             user.save()
         return user
