@@ -1,3 +1,6 @@
+import json
+
+from django.http import JsonResponse
 from django.shortcuts import render
 
 from django.views.generic.edit import CreateView
@@ -9,7 +12,16 @@ from django.contrib import messages
 from django.views import View
 
 from accounts.forms import CustomUserCreationForm
+from accounts.models import User
 
+
+class UserValidationView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        username = data['username']
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({"username_error": "This username is already used, please choose another"}, status=400)
+        return JsonResponse({"username_valid": True})
 
 class RegisterView(CreateView):
     template_name = 'accounts/register.html'

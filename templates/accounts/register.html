@@ -21,6 +21,9 @@
 
 
           </div>
+            <div class="invalid-feedback" id="user_invalid_feedback"style="display:none">
+
+            </div>
             <div class="form-outline mb-4">
             <input type="email" id="id_email" class="form-control form-control-lg" name="email" required
               placeholder="Enter a valid email address" />
@@ -62,7 +65,7 @@
               placeholder="ReEnter password" />
             <label class="form-label" for="id_password2">{% trans 'Password Confirmation' %}</label>
           </div>
-    
+
 
 
           <div class="text-center text-lg-start mt-4 pt-2">
@@ -85,5 +88,7 @@
 
   </div>
 </section>
+<script src="{% static "js/register.js" %}">
 
+</script>
 {% endblock %}
