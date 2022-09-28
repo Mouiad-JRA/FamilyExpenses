@@ -15,13 +15,25 @@ from accounts.forms import CustomUserCreationForm
 from accounts.models import User
 
 
-class UserValidationView(View):
+class UsernameValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
         username = data['username']
         if User.objects.filter(username=username).exists():
-            return JsonResponse({"username_error": "This username is already used, please choose another"}, status=400)
+            return JsonResponse({"username_error": "This username is already taken, please try another."}, status=400)
+
         return JsonResponse({"username_valid": True})
+
+
+class UserEmailValidationView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        email = data['email']
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({"email_error": "This Email is already taken, please try another."}, status=400)
+
+        return JsonResponse({"useremail_valid": True})
+
 
 class RegisterView(CreateView):
     template_name = 'accounts/register.html'
