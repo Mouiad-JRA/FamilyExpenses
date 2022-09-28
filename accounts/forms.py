@@ -18,6 +18,7 @@ class CustomUserCreationForm(UserCreationForm):
     picture = forms.ImageField(label=_("Picture/Logo"), required=False)
     family_name = forms.CharField(required=True, max_length=255)
     is_head = forms.BooleanField(required=True)
+    error_css_class = "error"
 
     class Meta:
         model = User
@@ -28,23 +29,15 @@ class CustomUserCreationForm(UserCreationForm):
         user = super(CustomUserCreationForm, self).save(commit=False)
 
         user.email = self.cleaned_data['email']
-        print(user.email)
         family_name = self.cleaned_data['family_name']
         is_head = self.cleaned_data['is_head']
         family, created = Family.objects.get_or_create(family_name=family_name)
-
         user.family = family
-
+        if is_head:
+            user.head = family
+        user.name = user.username
         if commit:
+            if self.cleaned_data["password1"]:
+                user.set_password(self.cleaned_data["password1"])
             user.save()
         return user
-
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-
-        try:
-            User.objects.get(email=email)
-        except User.DoesNotExist:
-            return email
-
-        raise ValidationError(self.error_messages["duplicate_username"])
