@@ -55,11 +55,12 @@ class UserHeadValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
         is_head = data['is_head']
+        family, created = Family.objects.get_or_create(family_name=data['family_name'])
+        if User.objects.filter(head=family).exists() and is_head:
+            return JsonResponse({"family_name_error": "You Can not Be the head of this Family, because it's already "
+                                                      "have one"}, status=400)
 
-        if Family.objects.filter():
-            return JsonResponse({"family_name_error": "please enter a Valid family name"}, status=400)
-
-        return JsonResponse({"userfamily_name_valid": True})
+        return JsonResponse({"family_name_valid": True})
 
 
 class RegisterView(CreateView):
