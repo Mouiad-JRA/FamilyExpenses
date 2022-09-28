@@ -11,7 +11,7 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.core.validators import validate_email
 from accounts.forms import CustomUserCreationForm
-from accounts.models import User
+from accounts.models import User, Family
 
 
 class UsernameValidationView(View):
@@ -46,6 +46,17 @@ class UserFamilyValidationView(View):
         family_name = data['family_name']
 
         if any(char.isdigit() for char in family_name) or not str(family_name).isalnum():
+            return JsonResponse({"family_name_error": "please enter a Valid family name"}, status=400)
+
+        return JsonResponse({"userfamily_name_valid": True})
+
+
+class UserHeadValidationView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        is_head = data['is_head']
+
+        if Family.objects.filter():
             return JsonResponse({"family_name_error": "please enter a Valid family name"}, status=400)
 
         return JsonResponse({"userfamily_name_valid": True})
