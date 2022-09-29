@@ -89,14 +89,17 @@ class RegisterView(CreateView):
         family_name = request.POST['family_name']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
+        ctx ={
+            'user': request.POST
+        }
         family, created = Family.objects.get_or_create(family_name=family_name)
         if User.objects.filter(head=family).exists():
             messages.error(request, "You Can not Be the head of this Family, because it's already have one")
-            return render(request, "accounts/register.html")
+            return render(request, "accounts/register.html",context=ctx)
 
         if password2 != password1:
             messages.error(request, "The two passwords doesn't match, please enter same password")
-            return render(request, "accounts/register.html")
+            return render(request, "accounts/register.html", context=ctx)
 
         messages.success(request, self.success_message)
 
