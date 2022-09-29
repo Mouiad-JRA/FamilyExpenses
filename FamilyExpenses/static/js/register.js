@@ -4,7 +4,7 @@ const usernamefeedbackField = document.querySelector('#username_invalid_feedback
 const userEmailfeedbackField = document.querySelector('#email_invalid_feedback');
 const usernameSuccess = document.querySelector('.usernameSuccess');
 const userEmailSuccess = document.querySelector('.userEmailSuccess');
-const family_name = document.querySelector("#id_family")
+const family_user_name = document.querySelector("#id_family")
 const family_namefeedbackField = document.querySelector("#family_name_invalid_feedback")
 const is_head = document.querySelector("#id_head")
 const headfeedbackField = document.querySelector("#is_head_invalid_feedback")
@@ -21,14 +21,14 @@ is_head.addEventListener('keyup', (e) => {
 
     if (headVal !== null) {
         fetch("/account/validate-family-head/", {
-              body:JSON.stringify( {is_head: headVal}),
+              body:JSON.stringify( {is_head: headVal,  family_name:family_user_name }),
             method: "POST",
         }).then(
             res => res.json(),
         ).then(data => {
             usernameSuccess.style.display = 'none';
             if (data.family_name_error) {
-                family_name.classList.add('is-invalid');
+                family_user_name.classList.add('is-invalid');
                 family_namefeedbackField.style.display = 'block';
                 family_namefeedbackField.innerHTML = `<p>${data.family_name_error}</p>`
             }
@@ -55,10 +55,10 @@ is_head.addEventListener('keyup', (e) => {
 
 
 
-family_name.addEventListener('keyup', (e) => {
+family_user_name.addEventListener('keyup', (e) => {
     const familyNameVal = e.target.value;
-    family_name.classList.remove('is-invalid');
-    family_namefeedbackField.style.display = 'none';
+    family_user_name.classList.remove('is-invalid');
+    family_user_name.style.display = 'none';
 
     if (familyNameVal.length > 0) {
         fetch("/account/validate-family-name/", {
@@ -69,7 +69,7 @@ family_name.addEventListener('keyup', (e) => {
         ).then(data => {
 
             if (data.family_name_error) {
-                family_name.classList.add('is-invalid');
+                family_user_name.classList.add('is-invalid');
                 family_namefeedbackField.style.display = 'block';
                 family_namefeedbackField.innerHTML = `<p>${data.family_name_error}</p>`
             }
