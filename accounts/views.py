@@ -66,6 +66,18 @@ class UserHeadValidationView(View):
         return JsonResponse({"family_name_valid": True})
 
 
+class PasswordValidationView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        password1 = data['passwordone']
+        password2 = data['password2']
+        if password2 != password1:
+            return JsonResponse({"password_error": "The two passwords doesn't match, please enter same password"},
+                                status=400)
+
+        return JsonResponse({"password_valid": True})
+
+
 class RegisterView(CreateView):
     template_name = 'accounts/register.html'
     success_url = reverse_lazy('add_expense')
