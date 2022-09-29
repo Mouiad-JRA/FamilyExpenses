@@ -14,13 +14,14 @@ const password2 = document.querySelector("#id_password2")
 const headfeedbackField = document.querySelector("#password_invalid_feedback")
 
 
+
 password2.addEventListener('keyup',(e)=>{
      const password2Val = e.target.value;
        password2.classList.remove('is-invalid');
        headfeedbackField.style.display = 'none';
        if (password2Val.length>0){
             fetch("/account/validate-family-head/", {
-              body:JSON.stringify( {password2: password2Val,  passwordone:password1 }),
+              body:JSON.stringify( {password2: password2Val,  passwordone:password1.textContent }),
             method: "POST",
         }).then(
             res => res.json(),
@@ -41,7 +42,7 @@ is_head.addEventListener('keyup', (e) => {
 
     if (headVal !== null) {
         fetch("/account/validate-family-head/", {
-              body:JSON.stringify( {is_head: headVal,  family_name:family_user_name }),
+              body:JSON.stringify( {is_head: headVal,  family_name:family_user_name.textContent }),
             method: "POST",
         }).then(
             res => res.json(),

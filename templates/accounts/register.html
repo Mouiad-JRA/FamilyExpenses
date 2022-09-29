@@ -9,11 +9,13 @@
         <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
           class="img-fluid" alt="Sample image">
       </div>
+
+
       <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
         <form action="" method="post" enctype="application/x-www-form-urlencoded">
             {% csrf_token %}
           <!-- username input -->
-
+        {% include 'partials/_messages.html' %}
           <div class="form-outline mb-4">
             <input type="username" id="id_username" class="form-control form-control-lg" name="username" required
               placeholder="Enter Your Full Name" />
@@ -73,6 +75,7 @@
 
          <div class="invalid-feedback" id="password_invalid_feedback"style="display:none">
          </div>
+
           <div class="text-center text-lg-start mt-4 pt-2">
             <button type="submit" class="btn btn-primary btn-lg"
               style="padding-left: 2.5rem; padding-right: 2.5rem;">{% trans 'Register' %}</button>

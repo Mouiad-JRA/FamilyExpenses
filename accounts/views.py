@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.http import JsonResponse
 
 from django.views.generic.edit import CreateView
@@ -83,6 +84,10 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('add_expense')
     form_class = CustomUserCreationForm
     success_message = "Your profile was created successfully"
+
+    def post(self, request, *args, **kwargs):
+        messages.success(request, "Success ")
+        return super(RegisterView, self).post(request, *args, **kwargs)
 
 
 class LogoutView(View):
