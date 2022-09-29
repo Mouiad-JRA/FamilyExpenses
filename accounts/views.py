@@ -13,6 +13,7 @@ from django.views import View
 from django.core.validators import validate_email
 from accounts.forms import CustomUserCreationForm
 from accounts.models import User, Family
+from django.core.mail import EmailMessage
 
 
 class UsernameValidationView(View):
@@ -89,18 +90,26 @@ class RegisterView(CreateView):
         family_name = request.POST['family_name']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
-        ctx ={
+        ctx = {
             'user': request.POST
         }
         family, created = Family.objects.get_or_create(family_name=family_name)
         if User.objects.filter(head=family).exists():
             messages.error(request, "You Can not Be the head of this Family, because it's already have one")
-            return render(request, "accounts/register.html",context=ctx)
+            return render(request, "accounts/register.html", context=ctx)
 
         if password2 != password1:
             messages.error(request, "The two passwords doesn't match, please enter same password")
             return render(request, "accounts/register.html", context=ctx)
 
+        email = EmailMessage(
+            'Login Account Email',
+            'Login URL',
+            'mouiad.alilo@gmail.com',
+            [request.POST['email']],
+
+        )
+        email.send(fail_silently=False)
         messages.success(request, self.success_message)
 
         return super(RegisterView, self).post(request, *args, **kwargs)

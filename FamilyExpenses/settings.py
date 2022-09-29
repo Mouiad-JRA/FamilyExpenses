@@ -97,8 +97,18 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'FamilyExpenses/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'mouiad.alilo@gmail.com'
+EMAIL_HOST_PASSWORD = 'qaz123zaq321!'
+DEFAULT_FROM_EMAIL = 'teat@gmail.com'
+
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
