@@ -15,6 +15,7 @@ const headfeedbackField = document.querySelector("#password_invalid_feedback")
 
 
 
+
 password2.addEventListener('keyup',(e)=>{
      const password2Val = e.target.value;
        password2.classList.remove('is-invalid');

@@ -6,9 +6,9 @@ from django.http import JsonResponse
 from django.views.generic.edit import CreateView
 from django.contrib.auth import login, logout
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
-
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.core.validators import validate_email
 from accounts.forms import CustomUserCreationForm
@@ -83,10 +83,23 @@ class RegisterView(CreateView):
     template_name = 'accounts/register.html'
     success_url = reverse_lazy('add_expense')
     form_class = CustomUserCreationForm
-    success_message = "Your profile was created successfully"
+    success_message = _("Your profile was created successfully")
 
     def post(self, request, *args, **kwargs):
-        messages.success(request, "Success ")
+        family_name = request.POST['family_name']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        family, created = Family.objects.get_or_create(family_name=family_name)
+        if User.objects.filter(head=family).exists():
+            messages.error(request, "You Can not Be the head of this Family, because it's already have one")
+            return render(request, "accounts/register.html")
+
+        if password2 != password1:
+            messages.error(request, "The two passwords doesn't match, please enter same password")
+            return render(request, "accounts/register.html")
+
+        messages.success(request, self.success_message)
+
         return super(RegisterView, self).post(request, *args, **kwargs)
 
 
