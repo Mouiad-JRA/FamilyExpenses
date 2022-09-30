@@ -15,19 +15,20 @@ const passwordfeedbackField = document.querySelector("#password_invalid_feedback
 
 
 
-
 password2.addEventListener('keyup',(e)=>{
+
      const password2Val = e.target.value;
        password2.classList.remove('is-invalid');
        passwordfeedbackField.style.display = 'none';
        if (password2Val.length>0){
-            fetch("/account/validate-family-head/", {
-              body:JSON.stringify( {password2: password2Val,  passwordone:password1.textContent }),
+            fetch("/account/validate-password/", {
+              body:JSON.stringify( {password2: password2Val,  passwordone:password1.value }),
             method: "POST",
         }).then(
             res => res.json(),
         ).then(data => {
             if (data.password_error) {
+                console.log(data)
                 password2.classList.add('is-invalid');
                 passwordfeedbackField.style.display = 'block';
                 passwordfeedbackField.innerHTML = `<p>${data.password_error}</p>`

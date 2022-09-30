@@ -56,6 +56,8 @@ class UserFamilyValidationView(View):
 class UserHeadValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
+        print("momo")
+        print(data)
         is_head = data['is_head']
         family_name = data['family_name']
         if not family_name:
@@ -71,6 +73,8 @@ class UserHeadValidationView(View):
 class PasswordValidationView(View):
     def post(self, request):
         data = json.loads(request.body)
+        print("moomo")
+        print(data)
         password1 = data['passwordone']
         password2 = data['password2']
         if password2 != password1:
@@ -102,14 +106,14 @@ class RegisterView(CreateView):
             messages.error(request, "The two passwords doesn't match, please enter same password")
             return render(request, "accounts/register.html", context=ctx)
 
-        # email = EmailMessage(
-        #     'Login Account Email',
-        #     'Login URL',
-        #     'mouiad.alilo@gmail.com',
-        #     [request.POST['email']],
-        #
-        # )
-        # email.send(fail_silently=False)
+        email = EmailMessage(
+            'Login Account Email',
+            'Login URL',
+            # 'mouiad.alilo@gmail.com',
+            [request.POST['email']],
+
+        )
+        email.send(fail_silently=False)
         messages.success(request, self.success_message)
 
         return super(RegisterView, self).post(request, *args, **kwargs)
