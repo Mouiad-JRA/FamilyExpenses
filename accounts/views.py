@@ -102,14 +102,14 @@ class RegisterView(CreateView):
             messages.error(request, "The two passwords doesn't match, please enter same password")
             return render(request, "accounts/register.html", context=ctx)
 
-        email = EmailMessage(
-            'Login Account Email',
-            'Login URL',
-            'mouiad.alilo@gmail.com',
-            [request.POST['email']],
-
-        )
-        email.send(fail_silently=False)
+        # email = EmailMessage(
+        #     'Login Account Email',
+        #     'Login URL',
+        #     'mouiad.alilo@gmail.com',
+        #     [request.POST['email']],
+        #
+        # )
+        # email.send(fail_silently=False)
         messages.success(request, self.success_message)
 
         return super(RegisterView, self).post(request, *args, **kwargs)

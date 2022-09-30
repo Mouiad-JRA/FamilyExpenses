@@ -107,7 +107,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'mouiad.alilo@gmail.com'
 EMAIL_HOST_PASSWORD = 'qaz123zaq321!'
-DEFAULT_FROM_EMAIL = 'teat@gmail.com'
+DEFAULT_FROM_EMAIL = 'mouiad.alilo@gmail.com'
 
 
 MESSAGE_TAGS = {
