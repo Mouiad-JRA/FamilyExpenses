@@ -161,4 +161,4 @@ class UserLogin(LoginView):
 class LogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
-        return redirect(reverse("account:register"))
+        return redirect(reverse("account:login"))
