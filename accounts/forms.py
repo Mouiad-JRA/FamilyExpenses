@@ -44,15 +44,4 @@ class CustomUserCreationForm(UserCreationForm):
         return user
 
 
-class UserLoginForm(LoginForm):
-    class Meta:
-        fields = ("email", "password1")
-
-    def __init__(self, request, *args, **kwargs):
-        self.request = request
-
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-
-    def save(self):
-        return User.objects.get(email=self.cleaned_data["login"])
 

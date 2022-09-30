@@ -13,10 +13,11 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.core.validators import validate_email
-from accounts.forms import CustomUserCreationForm, UserLoginForm
+from accounts.forms import CustomUserCreationForm
 from accounts.models import User, Family
 from django.core.mail import EmailMessage, send_mail
-from allauth.account.forms import LoginForm
+
+from django.contrib.auth import views as auth_views
 
 
 class UsernameValidationView(View):
@@ -148,10 +149,13 @@ class RegisterView(CreateView):
 
 
 class UserLogin(LoginView):
-    model = User
-    form_class = UserLoginForm
-    template_name = "accounts/login.html"
-    success_url = "/"
+    template_name = 'accounts/login.html'
+    success_url = reverse_lazy('expenses-dash:expenses')
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        print(self.get_form().errors)
+        return super(UserLogin, self).post(request, *args, **kwargs)
 
 
 class LogoutView(View):

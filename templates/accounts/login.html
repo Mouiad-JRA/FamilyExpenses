@@ -17,15 +17,15 @@
           <!-- username input -->
         {% include 'partials/_messages.html' %}
 
-            <div class="form-outline mb-4">
-            <input type="email" id="id_email" class="form-control form-control-lg" name="email" required
-              placeholder="Enter your email address" value="{{ user.email }}" />
-            <label class="form-label" for="id_email">{% trans 'Email address' %}</label>
-          </div>
+          <div class="form-outline mb-4">
+            <input type="username" id="id_username" class="form-control form-control-lg" name="username" required
+              placeholder="Enter Your Full Name" value="{{ user.username }}" />
+            <label class="form-label" for="id_username">{% trans 'User Name' %}</label>
+
 
           <!-- Password input -->
           <div class="form-outline mb-3">
-            <input type="password" id="id_password1" value="{{ user.password1 }}" class="form-control form-control-lg" name="password1" required
+            <input type="password" id="id_password1" value="{{ user.password1 }}" class="form-control form-control-lg" name="password" required
               placeholder="Enter password" />
             <label class="form-label" for="id_password1">{% trans 'Password' %}</label>
           </div>
