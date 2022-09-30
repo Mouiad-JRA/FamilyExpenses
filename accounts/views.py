@@ -1,10 +1,11 @@
 import json
 
 from django.contrib import messages
+from django.forms import forms
 from django.http import JsonResponse
 
 from django.views.generic.edit import CreateView
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, logout, authenticate
 
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
@@ -13,7 +14,7 @@ from django.views import View
 from django.core.validators import validate_email
 from accounts.forms import CustomUserCreationForm
 from accounts.models import User, Family
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 
 
 class UsernameValidationView(View):
@@ -86,37 +87,83 @@ class PasswordValidationView(View):
 
 class RegisterView(CreateView):
     template_name = 'accounts/register.html'
-    success_url = reverse_lazy('add_expense')
+    success_url = reverse_lazy('/')
     form_class = CustomUserCreationForm
     success_message = _("Your profile was created successfully")
 
     def post(self, request, *args, **kwargs):
         family_name = request.POST['family_name']
+
         password1 = request.POST['password1']
         password2 = request.POST['password2']
+        username = request.POST['username']
+        picture = request.POST['picture']
+        email = request.POST['email']
+        is_head = ''
+        try:
+            is_head = request.POST['is_head']
+        except:
+            print("This is not the Head of Family")
         ctx = {
             'user': request.POST
         }
         family, created = Family.objects.get_or_create(family_name=family_name)
-        if User.objects.filter(head=family).exists():
+        if is_head and User.objects.filter(head=family).exists():
             messages.error(request, "You Can not Be the head of this Family, because it's already have one")
+            return render(request, "accounts/register.html", context=ctx)
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "This Email is already taken, please try another.")
+            return render(request, "accounts/register.html", context=ctx)
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "This Username is already taken, please try another.")
             return render(request, "accounts/register.html", context=ctx)
 
         if password2 != password1:
             messages.error(request, "The two passwords doesn't match, please enter same password")
             return render(request, "accounts/register.html", context=ctx)
 
-        email = EmailMessage(
-            'Login Account Email',
-            'Login URL',
-            'noreply@semycolon.com',
+        send_mail(
+            'Welcoming Login Account Email',
+            'You have registered in out site, login in here',
+            'noreply@gmail.com',
             [request.POST['email']],
 
         )
-        email.send(fail_silently=False)
+
+        if is_head:
+             user = User.objects.create_user(username=username, name=username, email=email, picture=picture, family=family, head=family)
+        else:
+            user = User.objects.create_user(username=username,name=username, email=email, picture=picture, family=family)
+        user.set_password(password1)
+        user.save()
+
         messages.success(request, self.success_message)
 
         return super(RegisterView, self).post(request, *args, **kwargs)
+
+
+class LogiView(View):
+    template_name = 'authentication/login.html'
+
+    def get(self, request):
+        form = self.form_class()
+        message = ''
+        return render(request, self.template_name, context={'form': form, 'message': message})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = authenticate(
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password'],
+            )
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+        message = 'Login failed!'
+        return render(request, self.template_name, context={'form': form, 'message': message})
 
 
 class LogoutView(View):

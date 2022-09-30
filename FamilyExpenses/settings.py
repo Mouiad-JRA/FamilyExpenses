@@ -111,3 +111,6 @@ EMAIL_HOST_PASSWORD = 'dwkscokpbzcrmzkq'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
+
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

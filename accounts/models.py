@@ -17,7 +17,7 @@ class User(AbstractUser):
     head = models.OneToOneField(Family, null=True, related_name='familyhead', on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.get_full_name()
+        return self.name
 
     def set_picture(self, picture_data):
         try:
