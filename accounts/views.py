@@ -1,6 +1,7 @@
 import json
 
 from django.contrib import messages
+from django.contrib.auth.views import LoginView
 from django.forms import forms
 from django.http import JsonResponse
 
@@ -12,9 +13,10 @@ from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.core.validators import validate_email
-from accounts.forms import CustomUserCreationForm
+from accounts.forms import CustomUserCreationForm, UserLoginForm
 from accounts.models import User, Family
 from django.core.mail import EmailMessage, send_mail
+from allauth.account.forms import LoginForm
 
 
 class UsernameValidationView(View):
@@ -87,7 +89,7 @@ class PasswordValidationView(View):
 
 class RegisterView(CreateView):
     template_name = 'accounts/register.html'
-    success_url = reverse_lazy('/')
+    success_url = reverse_lazy('login')
     form_class = CustomUserCreationForm
     success_message = _("Your profile was created successfully")
 
@@ -131,11 +133,12 @@ class RegisterView(CreateView):
             [request.POST['email']],
 
         )
-
         if is_head:
-             user = User.objects.create_user(username=username, name=username, email=email, picture=picture, family=family, head=family)
+            user = User.objects.create_user(username=username, name=username, email=email, picture=picture,
+                                            family=family, head=family)
         else:
-            user = User.objects.create_user(username=username,name=username, email=email, picture=picture, family=family)
+            user = User.objects.create_user(username=username, name=username, email=email, picture=picture,
+                                            family=family)
         user.set_password(password1)
         user.save()
 
@@ -144,26 +147,11 @@ class RegisterView(CreateView):
         return super(RegisterView, self).post(request, *args, **kwargs)
 
 
-class LogiView(View):
-    template_name = 'authentication/login.html'
-
-    def get(self, request):
-        form = self.form_class()
-        message = ''
-        return render(request, self.template_name, context={'form': form, 'message': message})
-
-    def post(self, request):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            user = authenticate(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password'],
-            )
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-        message = 'Login failed!'
-        return render(request, self.template_name, context={'form': form, 'message': message})
+class UserLogin(LoginView):
+    model = User
+    form_class = UserLoginForm
+    template_name = "accounts/login.html"
+    success_url = "/"
 
 
 class LogoutView(View):

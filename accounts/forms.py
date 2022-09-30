@@ -1,3 +1,4 @@
+from allauth.account.forms import LoginForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.exceptions import ValidationError
@@ -41,3 +42,17 @@ class CustomUserCreationForm(UserCreationForm):
                 user.set_password(self.cleaned_data["password1"])
             user.save()
         return user
+
+
+class UserLoginForm(LoginForm):
+    class Meta:
+        fields = ("email", "password1")
+
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        return User.objects.get(email=self.cleaned_data["login"])
+
