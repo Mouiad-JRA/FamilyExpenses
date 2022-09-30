@@ -109,7 +109,7 @@ class RegisterView(CreateView):
         email = EmailMessage(
             'Login Account Email',
             'Login URL',
-            # 'mouiad.alilo@gmail.com',
+            'noreply@semycolon.com',
             [request.POST['email']],
 
         )

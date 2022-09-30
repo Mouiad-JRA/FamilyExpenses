@@ -99,15 +99,13 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
+SMTP_ENABLED = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'expenseq@gmail.com'
-EMAIL_HOST_PASSWORD = 'momohanaj2mf'
-DEFAULT_FROM_EMAIL = 'expenseq@gmail.com'
+EMAIL_HOST_PASSWORD = 'dwkscokpbzcrmzkq'
 
 
 MESSAGE_TAGS = {
