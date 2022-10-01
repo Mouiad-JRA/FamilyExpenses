@@ -22,7 +22,7 @@
 <div class="card">
   <div class="card-body">
     <form action="{% url 'expenses-dash:expenses' %}" method="post">
-
+        {% csrf_token %}
         <div class="form-group" style="margin-bottom: 15px">
             <label for="">{% trans "Price" %}</label>
             <input type="number" class="form-control form-control-sm" name="price">
@@ -31,24 +31,22 @@
         <div class="form-group"  style="margin-bottom: 15px">
             <label for="">{% trans "Outlay Type" %}</label>
             <select class="form-control" name="outlay_type">
-                <option name="outlay_type">
-                    1
+                {% for outlay in outlay_types %}
+                <option name="outlay_type" value="{{ outlay.name }}">
+                    {{ outlay.name }}
                 </option>
-                      <option name="outlay_type">
-                    2
-                </option>
+                {% endfor %}
             </select>
 
         </div>
         <div class="form-group" style="margin-bottom: 15px">
             <label for="">{% trans "Material" %}</label>
             <select class="form-control" name="material">
-                <option name="material">
-                    1
+                  {% for material in materials %}
+                <option name="material" value="{{ material.name }}">
+                   {{ material.name }}
                 </option>
-                      <option name="material">
-                    2
-                </option>
+             {% endfor %}
             </select>
 
         </div>
