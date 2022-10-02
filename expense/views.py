@@ -46,3 +46,34 @@ def add_expense(request):
         messages.success(request, 'Outlay Saved successfully')
         return redirect("expenses-dash:expenses")
 
+def expense_edit(request, id):
+    expense = Outlay.objects.get(pk=id)
+    ctx = {
+        "expense" :expense
+    }
+    if request.method == 'GET':
+        return render(request, 'expenses/edit_expense.html', ctx)
+
+    elif request.method == 'POST':
+        price = request.POST['price']
+        description = request.POST['description']
+        date = request.POST['date']
+        outlay_type = request.POST['outlay_type']
+        material = request.POST['material']
+
+        if not price:
+            messages.error(request, 'Price is required')
+            return render(request, 'expenses/add_expense.html', ctx)
+        if not description:
+            messages.error(request, 'Description is required')
+            return render(request, 'expenses/add_expense.html', ctx)
+        if not date:
+            messages.error(request, 'Date is required')
+            return render(request, 'expenses/add_expense.html', ctx)
+        if outlay_type and material:
+            outlay_type = OutlayType.objects.get(name=outlay_type)
+            material = Material.objects.get(name=material)
+            Outlay.objects.create(owner=request.user, price=price, date=date, description=description,
+                                  material=material, outlay_type=outlay_type)
+        messages.success(request, 'Outlay Saved successfully')
+        return redirect("expenses-dash:expenses")
