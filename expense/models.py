@@ -5,7 +5,7 @@ from accounts.models import User
 
 
 class Material(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     is_service = models.BooleanField()
     description = models.TextField()
 
@@ -14,7 +14,7 @@ class Material(models.Model):
 
 
 class OutlayType(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
 
     def __str__(self):
