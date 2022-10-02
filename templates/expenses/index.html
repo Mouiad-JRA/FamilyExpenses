@@ -60,7 +60,7 @@
             <td>
                 {{ outlay.date }}
             </td>
-         <th><a href="{% url "expenses-dash:edit" expense %}" class="btn btn-secondary">
+         <th><a href="{% url "expenses-dash:edit" outlay.id %}" class="btn btn-secondary btn-sm">
              {% trans "Edit" %}</a> </th>
 
         </tr>

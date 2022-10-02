@@ -46,10 +46,15 @@ def add_expense(request):
         messages.success(request, 'Outlay Saved successfully')
         return redirect("expenses-dash:expenses")
 
+
 def expense_edit(request, id):
     expense = Outlay.objects.get(pk=id)
+    outlay_types = OutlayType.objects.all()
+    materials = Material.objects.all()
     ctx = {
-        "expense" :expense
+        "expense": expense,
+        "outlay_types": outlay_types,
+        "materials": materials
     }
     if request.method == 'GET':
         return render(request, 'expenses/edit_expense.html', ctx)
@@ -63,17 +68,22 @@ def expense_edit(request, id):
 
         if not price:
             messages.error(request, 'Price is required')
-            return render(request, 'expenses/add_expense.html', ctx)
+            return render(request, 'expenses/edit_expense.html', ctx)
         if not description:
             messages.error(request, 'Description is required')
-            return render(request, 'expenses/add_expense.html', ctx)
+            return render(request, 'expenses/edit_expense.html', ctx)
         if not date:
             messages.error(request, 'Date is required')
-            return render(request, 'expenses/add_expense.html', ctx)
+            return render(request, 'expenses/edit_expense.html', ctx)
         if outlay_type and material:
             outlay_type = OutlayType.objects.get(name=outlay_type)
             material = Material.objects.get(name=material)
-            Outlay.objects.create(owner=request.user, price=price, date=date, description=description,
-                                  material=material, outlay_type=outlay_type)
+            expense.owner = request.user
+            expense.price = price
+            expense.date = date
+            expense.description = description
+            expense.outlay_type = outlay_type
+            expense.material = material
+            expense.save()
         messages.success(request, 'Outlay Saved successfully')
         return redirect("expenses-dash:expenses")
