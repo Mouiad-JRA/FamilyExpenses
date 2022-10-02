@@ -38,7 +38,8 @@
            <th>{% trans "Material" %}</th>
            <th>{% trans "Description" %}</th>
             <th>{% trans "Date" %}</th>
-            <th>{% trans "Date" %}</th>
+            <th>{% trans "Delete" %}</th>
+            <th>{% trans "Edit" %}</th>
 
         </tr>
         </thead>
@@ -60,6 +61,8 @@
             <td>
                 {{ outlay.date }}
             </td>
+                     <th><a href="{% url "expenses-dash:delete" outlay.id %}" class="btn btn-danger btn-sm">
+             {% trans "Delete" %}</a> </th>
          <th><a href="{% url "expenses-dash:edit" outlay.id %}" class="btn btn-secondary btn-sm">
              {% trans "Edit" %}</a> </th>
 

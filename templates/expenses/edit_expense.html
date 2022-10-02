@@ -8,7 +8,9 @@
 
 {% block content  %}
 <div class="container mt-4">
-<nav aria-label="breadcrumb">
+<div class="row">
+    <div class="col-md-10">
+        <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
             <a href="{% url 'expenses-dash:expenses' %}">{% trans 'Epenses' %}</a>
@@ -18,7 +20,15 @@
         </li>
     </ol>
 </nav>
+    </div>
+        <div class="col-md-2">
+                     <a href="{% url "expenses-dash:delete" expense.id %}" class="btn btn-danger btn-sm">
+             {% trans "Delete" %}</a>
+    </div>
 </div>
+
+</div>
+
 <div class="card">
   <div class="card-body">
     <form action="{% url "expenses-dash:edit" expense.id %}" method="post">

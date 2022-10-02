@@ -85,5 +85,12 @@ def expense_edit(request, id):
             expense.outlay_type = outlay_type
             expense.material = material
             expense.save()
-        messages.success(request, 'Outlay Saved successfully')
+        messages.success(request, 'Outlay Updated successfully')
         return redirect("expenses-dash:expenses")
+
+
+def delete_expense(request, id):
+    expense = Outlay.objects.get(pk=id)
+    expense.delete()
+    messages.success(request, 'Outlay has been deleted successfully')
+    return redirect("expenses-dash:expenses")
