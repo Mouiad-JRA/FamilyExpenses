@@ -25,8 +25,8 @@ class Outlay(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     outlay_type = models.ForeignKey(OutlayType, on_delete=models.CASCADE)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=7, decimal_places=3)
-    date = models.DateField(default=now())
+    price = models.DecimalField(max_digits=8, decimal_places=3, null=False)
+    date = models.DateField(default=now(), null=False)
     description = models.TextField()
 
     def __str__(self):
