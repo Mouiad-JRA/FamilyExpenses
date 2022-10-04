@@ -5,12 +5,16 @@ from django.views.generic import CreateView, DetailView
 
 # from expense.forms import OutlayCreationForm, OutlayEditForm
 from expense.models import OutlayType, Material, Outlay
-
+from django.core.paginator import Paginator
 
 def index(request):
     expenses = Outlay.objects.filter(owner=request.user)
+    paginator = Paginator(expenses, 5)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
     ctx = {
-        'outlays': expenses
+        'outlays': expenses,
+        'page_obj': page_obj
     }
     return render(request, 'expenses/index.html', ctx)
 

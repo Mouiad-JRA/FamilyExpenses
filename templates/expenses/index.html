@@ -44,7 +44,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for outlay in outlays %}
+        {% for outlay in page_obj %}
         <tr>
             <td>
                 {{ outlay.price }}
@@ -70,6 +70,27 @@
         {% endfor %}
         </tbody>
     </table>
+        <div class="">
+        {% trans 'Showing page' %} {{ page_obj.number }} {% trans 'of' %} {{ page_obj.paginator.num_pages }}
+        </div>
+    <ul class="pagination align-right float-right mr-auto">
+    {% if page_obj.has_previous %}
+        <li {% if page_obj.number == 1 %} class="page-item active"{% endif %}>
+        <a class="page-link" href="?page=1">&laquo; {% trans '1' %}</a>
+        </li>
+            <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a>
+        </li>
+    {% endif %}
+        {% if page_obj.has_next %}
+         <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
+        </li>
+            <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}  &raquo;</a>
+        </li>
+            {% endif %}
+    </ul>
     {% else %}
     <h5>{% trans "You don't have any outlays yet" %}</h5>
     {% endif %}
