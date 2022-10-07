@@ -7,6 +7,34 @@ from django.views.generic import CreateView, DetailView
 from expense.models import OutlayType, Material, Outlay
 from django.core.paginator import Paginator
 
+import json
+from django.http import JsonResponse
+
+
+def search_expenses(request):
+    if request.method == 'POST':
+        search_string = json.loads(request.body).get('searchText')
+        expense = Outlay.objects.filter(
+            price__istartswith=search_string,
+            owner=request.user
+        ) | Outlay.objects.filter(
+            date__istartswith=search_string,
+            owner=request.user
+        ) | Outlay.objects.filter(
+            description__icontains=search_string,
+            owner=request.user
+        ) | Outlay.objects.filter(
+            outlay_type__name__icontains=search_string,
+            owner=request.user
+        ) | Outlay.objects.filter(
+            material__name__icontains=search_string,
+            owner=request.user
+        )
+        data = expense.values()
+
+    return JsonResponse(list(data), safe=False)
+
+
 def index(request):
     expenses = Outlay.objects.filter(owner=request.user)
     paginator = Paginator(expenses, 5)
@@ -17,6 +45,7 @@ def index(request):
         'page_obj': page_obj
     }
     return render(request, 'expenses/index.html', ctx)
+
 
 #
 # class ExpenseCreateView(CreateView):
