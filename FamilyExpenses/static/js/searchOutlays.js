@@ -2,26 +2,31 @@ const searchField = document.querySelector('#id_search')
 const tableOutput = document.querySelector('.table-output')
 const appTable = document.querySelector('.app-table')
 const pagination = document.querySelector('.pagination-container')
-const tableBody = document.querySelector('.table-boday')
+const tableBody = document.querySelector('.table-body')
+
+
 
 tableOutput.style.display = "none";
 
 searchField.addEventListener('keyup',(e)=>{
     const searchValue = e.target.value;
     if(searchValue.trim().length>0){
+        console.log(searchValue)
         pagination.style.display = "none";
         tableBody.innerHTML="";
+
      fetch("search-expenses", {
          body:JSON.stringify( {searchText: searchValue }),
          method: "POST",
-        }).then(
-            res => res.json(),
-        ).then(data => {
-           console.log('data',data)
+        })
+         .then(
+            res => res.json())
+         .then(data => {
          appTable.style.display = "none"
          tableOutput.style.display = "block";
-         if(data.length==0){
-         tableOutput.innerHTML = "No results Found";
+         if(data.length===0){
+
+         tableOutput.style.display = "none";
          }else{
              data.forEach(outlay=>{
                  console.log(outlay)
@@ -42,10 +47,7 @@ searchField.addEventListener('keyup',(e)=>{
             <td>
                 ${outlay.date}
             </td>
-                     <th><a href="{% url "expenses-dash:delete" outlay.id %}" class="btn btn-danger btn-sm">
-             {% trans "Delete" %}</a> </th>
-         <th><a href="{% url "expenses-dash:edit" outlay.id %}" class="btn btn-secondary btn-sm">
-             {% trans "Edit" %}</a> </th>
+
 
         </tr>
                 `
@@ -55,11 +57,9 @@ searchField.addEventListener('keyup',(e)=>{
         });
     }
     else{
-        tableOutput.style.display ="none";
         appTable.style.display = "block";
         pagination.style.display = "block";
-
-
+        tableOutput.style.display ="none";
 
     }
 })
