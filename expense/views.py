@@ -1,3 +1,4 @@
+from braces.views import UserFormKwargsMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -72,17 +73,10 @@ class ExpenseCreateView(CreateView):
         return reverse('expenses-dash:expenses')
 
 
-class ExpenseEditView(UpdateView):
+class ExpenseEditView(UserFormKwargsMixin, UpdateView):
     template_name = "expenses/edit_expense.html"
-    queryset = Outlay.objects.all()
-
-    def get_form(self, form_class=None):
-        if self.request.method == 'POST':
-            return OutlayEditForm(self.request.POST, user=self.request.user)
-        return OutlayEditForm(user=self.request.user)
-
-    def get_object(self, queryset=None):
-        return Outlay.objects.filter(pk=self.kwargs.get('pk')).first()
+    model = Outlay
+    form_class = OutlayCreationForm
 
     def get_context_data(self, **kwargs):
         context = super(ExpenseEditView, self).get_context_data(**kwargs)
@@ -90,12 +84,11 @@ class ExpenseEditView(UpdateView):
         materials = Material.objects.all()
         context['outlay_types'] = outlay_types
         context['materials'] = materials
-        context['user'] = self.request.user
         return context
 
     def get_success_url(self):
         messages.success(self.request, 'Outlay Update successfully')
-        return redirect('expenses-dash:expenses')
+        return reverse('expenses-dash:expenses')
 
 
 def add_expense(request):

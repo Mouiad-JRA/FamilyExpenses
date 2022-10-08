@@ -72,16 +72,16 @@ class OutlayEditForm(forms.ModelForm):
         outlay.outlay_type = OutlayType.objects.filter(name=self.cleaned_data['outlay_type']).first()
         outlay.material = Material.objects.filter(name=self.cleaned_data['material']).first()
         outlay.owner = self.user
-
+        # Outlay.objects.update(price=outlay.price,description=outlay.description,date=outlay.date,outlay_type=outlay.outlay_type, material=outlay.material, owner=outlay.owner)
         if commit:
             outlay.save()
         return outlay
 
-    # def clean_date(self):
-    #     date = self.cleaned_data['date']
-    #     if date > now().date():
-    #         raise ValidationError("You can't choose date in Future")
-    #     return date
+    def clean_date(self):
+        date = self.cleaned_data['date']
+        if date > now().date():
+            raise ValidationError("You can't choose date in Future")
+        return date
 
     def clean_price(self):
         price = self.cleaned_data['price']
