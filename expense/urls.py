@@ -1,6 +1,6 @@
 from django.urls import path
 
-from expense.views import index, add_expense, expense_edit, delete_expense, ExpenseCreateView, ExpenseEditView, search_expenses
+from expense.views import index, delete_expense, ExpenseCreateView, ExpenseEditView, search_expenses
 from django.views.decorators.csrf import csrf_exempt
 app_name = "expenses-dash"
 urlpatterns = [

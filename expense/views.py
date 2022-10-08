@@ -1,11 +1,10 @@
-from braces.views import UserFormKwargsMixin
+from braces.views import UserFormKwargsMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, UpdateView
 
-# from expense.forms import OutlayCreationForm, OutlayEditForm
-from expense.forms import OutlayCreationForm, OutlayEditForm
+from expense.forms import OutlayCreationForm
 from expense.models import OutlayType, Material, Outlay
 from django.core.paginator import Paginator
 
@@ -49,14 +48,12 @@ def index(request):
     return render(request, 'expenses/index.html', ctx)
 
 
-class ExpenseCreateView(CreateView):
+class ExpenseCreateView(LoginRequiredMixin,UserFormKwargsMixin, CreateView):
     template_name = "expenses/add_expense.html"
     success_url = 'expenses-dash:expenses'
+    form_class = OutlayCreationForm
 
-    def get_form(self, form_class=None):
-        if self.request.method == 'POST':
-            return OutlayCreationForm(self.request.POST, user=self.request.user)
-        return OutlayCreationForm(user=self.request.user)
+
 
     def get_context_data(self, **kwargs):
         context = super(ExpenseCreateView, self).get_context_data(**kwargs)
@@ -65,7 +62,6 @@ class ExpenseCreateView(CreateView):
         context['outlay_types'] = outlay_types
         context['materials'] = materials
         context['values'] = self.request.POST
-        context['user'] = self.request.user
         return context
 
     def get_success_url(self):
@@ -73,7 +69,7 @@ class ExpenseCreateView(CreateView):
         return reverse('expenses-dash:expenses')
 
 
-class ExpenseEditView(UserFormKwargsMixin, UpdateView):
+class ExpenseEditView(LoginRequiredMixin, UserFormKwargsMixin, UpdateView):
     template_name = "expenses/edit_expense.html"
     model = Outlay
     form_class = OutlayCreationForm
