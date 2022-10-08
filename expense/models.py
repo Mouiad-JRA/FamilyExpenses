@@ -33,4 +33,4 @@ class Outlay(models.Model):
         return f"This Expense for{self.description} which belong to {self.owner.username} with amount {self.price}"
 
     class Meta:
-        ordering: ['-data']
+        ordering: ['-date']
