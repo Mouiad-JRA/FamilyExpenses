@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView
 
 # from expense.forms import OutlayCreationForm, OutlayEditForm
+from expense.forms import OutlayCreationForm, OutlayEditForm
 from expense.models import OutlayType, Material, Outlay
 from django.core.paginator import Paginator
 
@@ -47,44 +48,53 @@ def index(request):
     return render(request, 'expenses/index.html', ctx)
 
 
-#
-# class ExpenseCreateView(CreateView):
-#     form_class = OutlayCreationForm
-#     template_name = "expenses/add_expense.html"
-#     success_url = 'expenses-dash:expenses'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(ExpenseCreateView, self).get_context_data(**kwargs)
-#         outlay_types = OutlayType.objects.all()
-#         materials = Material.objects.all()
-#         context['outlay_types'] = outlay_types
-#         context['materials'] = materials
-#         context['values'] = self.request.POST
-#         return context
-#
-#     def get_success_url(self):
-#         messages.success(self.request, 'Outlay Saved successfully')
-#         return reverse('expenses-dash:expenses')
-#
-#
-# class ExpenseEditView(DetailView):
-#     form_class = OutlayEditForm
-#     template_name = "expenses/edit_expense.html"
-#     queryset = Outlay.objects.all()
-#
-#     # def get_object(self, queryset=None):
-#     def get_context_data(self, **kwargs):
-#         context = super(ExpenseEditView, self).get_context_data(**kwargs)
-#         outlay_types = OutlayType.objects.all()
-#         materials = Material.objects.all()
-#         context['outlay_types'] = outlay_types
-#         context['materials'] = materials
-#         context['values'] = self.request.POST
-#         return context
-#
-#     def get_success_url(self):
-#         messages.success(self.request, 'Outlay Update successfully')
-#         return redirect('expenses-dash:expenses')
+class ExpenseCreateView(CreateView):
+    template_name = "expenses/add_expense.html"
+    success_url = 'expenses-dash:expenses'
+
+    def get_form(self, form_class=None):
+        if self.request.method == 'POST':
+            return OutlayCreationForm(self.request.POST, user=self.request.user)
+        return OutlayCreationForm(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(ExpenseCreateView, self).get_context_data(**kwargs)
+        outlay_types = OutlayType.objects.all()
+        materials = Material.objects.all()
+        context['outlay_types'] = outlay_types
+        context['materials'] = materials
+        context['values'] = self.request.POST
+        context['user'] = self.request.user
+        return context
+
+    def get_success_url(self):
+        messages.success(self.request, 'Outlay Saved successfully')
+        return reverse('expenses-dash:expenses')
+
+
+class ExpenseEditView(DetailView):
+    template_name = "expenses/edit_expense.html"
+    queryset = Outlay.objects.all()
+
+    def get_form(self, form_class=None):
+        if self.request.method == 'POST':
+            return OutlayEditForm(self.request.POST, user=self.request.user)
+        return OutlayEditForm(user=self.request.user)
+
+    def get_object(self, queryset=None):
+        return Outlay.objects.filter(pk=self.kwargs.get('pk')).first()
+
+    def get_context_data(self, **kwargs):
+        context = super(ExpenseEditView, self).get_context_data(**kwargs)
+        outlay_types = OutlayType.objects.all()
+        materials = Material.objects.all()
+        context['outlay_types'] = outlay_types
+        context['materials'] = materials
+        return context
+
+    def get_success_url(self):
+        messages.success(self.request, 'Outlay Update successfully')
+        return redirect('expenses-dash:expenses')
 
 
 def add_expense(request):

@@ -10,7 +10,7 @@ class Material(models.Model):
     description = models.TextField()
 
     def __str__(self):
-        return f"This Material name is {self.name}"
+        return self.name
 
 
 class OutlayType(models.Model):
