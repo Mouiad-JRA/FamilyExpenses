@@ -1,11 +1,14 @@
 from braces.views import UserFormKwargsMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView
 
-from accounts.models import User
+from accounts.forms import CustomUserCreationForm
+from accounts.models import User, Family
+from accounts.views import RegisterView
 from expense.forms import OutlayCreationForm, MaterialCreationForm, OutlayTypeCreationForm
 from expense.models import OutlayType, Material, Outlay
 from django.core.paginator import Paginator
@@ -154,7 +157,6 @@ def delete_outlaytype(request, pk):
     return redirect("expenses-dash:outlaytypes")
 
 
-
 class MaterialListView(ListView):
     template_name = "expenses/materials.html"
     success_url = 'expenses-dash:materials'
@@ -208,3 +210,78 @@ def delete_material(request, pk):
     material.delete()
     messages.success(request, 'Material has been deleted successfully')
     return redirect("expenses-dash:materials")
+
+
+class UserListView(ListView):
+    template_name = "expenses/users.html"
+    success_url = 'expenses-dash:users'
+    queryset = User.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.user.is_head_of_fmaily():
+            messages.error(request, "You are not the head of the Family So you can't see/add or edit any materials")
+            return render(request, "expenses/expenses.html")
+        return super(UserListView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        users = self.queryset
+        paginator = Paginator(users, 5)
+        page_number = self.request.GET.get('page')
+        page_obj = Paginator.get_page(paginator, page_number)
+        ctx = {
+            'users': users,
+            'page_obj': page_obj
+        }
+        return ctx
+
+
+class UserCreateView(CreateView):
+    template_name = 'expenses/add_user.html'
+    success_url = reverse_lazy('expenses-dash:users')
+    success_message = "User profile has been created successfully"
+    form_class = CustomUserCreationForm
+
+    def post(self, request, *args, **kwargs):
+        family_name = request.POST['family_name']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        username = request.POST['username']
+        picture = request.POST['picture']
+        email = request.POST['email']
+        is_head = ''
+        try:
+            is_head = request.POST['is_head']
+        except:
+            print("This is not the Head of Family")
+        ctx = {
+            'user': request.POST
+        }
+        family, created = Family.objects.get_or_create(family_name=family_name)
+        if is_head and User.objects.filter(head=family).exists():
+            messages.error(request, "You Can not add another head for this Family, because it's already have one")
+            return render(request, "expenses/add_user.html", context=ctx)
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "This Email is already taken, please try another.")
+            return render(request, "expenses/add_user.html", context=ctx)
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "This Username is already taken, please try another.")
+            return render(request, "expenses/add_user.html", context=ctx)
+
+        if password2 != password1:
+            messages.error(request, "The two passwords doesn't match, please enter same password")
+            return render(request, "expenses/add_user.html", context=ctx)
+
+        if is_head:
+            user = User.objects.create_user(username=username, name=username, email=email, picture=picture,
+                                            family=family, head=family)
+        else:
+            user = User.objects.create_user(username=username, name=username, email=email, picture=picture,
+                                            family=family)
+        user.set_password(password1)
+        user.save()
+
+        messages.success(request, self.success_message)
+
+        return super(UserCreateView, self).post(request, *args, **kwargs)

@@ -20,7 +20,11 @@ class User(AbstractUser):
         return self.name
 
     def is_head_of_fmaily(self):
-        return self.head == self.family
+        if self.head == self.family:
+            self.is_superuser = True
+            self.save()
+            return True
+        return False
 
     def set_picture(self, picture_data):
         try:
