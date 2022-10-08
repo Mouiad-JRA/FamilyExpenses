@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static i18n %}
+{% block title %}
+<h1>{% trans 'Expense List' %}</h1>
+{% endblock %}
+
+{% block content  %}
+<div class="container" mt-4>
+
+<div class="row">
+    <div class="col-md-10" style="position: inherit">
+        <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="#">{% trans 'Materials' %}</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            {% trans 'All Materials' %}
+        </li>
+    </ol>
+</nav>
+        </div>
+    <div class="col-md-2">
+        <a href="{% url 'expenses-dash:add_material' %}"
+           class="btn btn-primary">{% trans 'Add Material' %}</a>
+    </div>
+</div>
+    <br/>
+<div class="container">
+    {% include 'partials/_messages.html' %}
+    {% if materials.count %}
+
+   <div class="app-table">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+           <th>{% trans "Name" %}</th>
+           <th>{% trans "Is Service" %}</th>
+           <th>{% trans "Description" %}</th>
+            <th>{% trans "Delete" %}</th>
+            <th>{% trans "Edit" %}</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for material in page_obj %}
+        <tr>
+            <td>
+                {{ material.name }}
+            </td>
+            <td>
+                {{ material.is_service }}
+            </td>
+            <td>
+               {{  material.description }}
+            </td>
+
+                     <th><a id='delete'href="{% url "expenses-dash:delete_material" material.id %}" class="btn btn-danger btn-sm">
+             {% trans "Delete" %}</a> </th>
+         <th><a id="edit" href="{% url "expenses-dash:edit_material" material.id %}" class="btn btn-secondary btn-sm">
+             {% trans "Edit" %}</a> </th>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+   </div>
+   <div class="pagination-container">
+
+
+        <div class="">
+        {% trans 'Showing page' %} {{ page_obj.number }} {% trans 'of' %} {{ page_obj.paginator.num_pages }}
+        </div>
+    <ul class="pagination align-right float-right mr-auto">
+    {% if page_obj.has_previous %}
+        <li {% if page_obj.number == 1 %} class="page-item active"{% endif %}>
+        <a class="page-link" href="?page=1">&laquo; {% trans '1' %}</a>
+        </li>
+            <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">{% trans "Previous" %}</a>
+        </li>
+    {% endif %}
+        {% if page_obj.has_next %}
+         <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}">{% trans "Next" %}</a>
+        </li>
+            <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}  &raquo;</a>
+        </li>
+            {% endif %}
+    </ul>
+    {% else %}
+
+    </div>
+   <h5>{% trans "You don't have any Materials yet" %}</h5>
+   {% endif %}
+</div>
+</div>
+<script src="{% static "js/searchOutlays.js" %}">
+
+</script>
+{% endblock %}

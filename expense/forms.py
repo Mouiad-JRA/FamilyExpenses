@@ -46,3 +46,14 @@ class OutlayCreationForm(forms.ModelForm):
         if price < 0:
             raise ValidationError("You can't choose a negative price")
         return price
+
+
+
+class MaterialCreationForm(forms.ModelForm):
+    class Meta:
+        model = Material
+        fields = (
+            "name",
+            "is_service",
+            "description",
+        )
