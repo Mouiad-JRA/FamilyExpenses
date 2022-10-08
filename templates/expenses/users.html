@@ -20,10 +20,10 @@
     </ol>
 </nav>
         </div>
-{#    <div class="col-md-2">#}
-{#        <a href="{% url 'expenses-dash:add_user' %}"#}
-{#           class="btn btn-primary">{% trans 'Add Users' %}</a>#}
-{#    </div>#}
+    <div class="col-md-2">
+        <a href="{% url 'admin:accounts_user_add' %}"
+           class="btn btn-primary">{% trans 'Add Users' %}</a>
+    </div>
 </div>
     <br/>
 <div class="container">
@@ -38,6 +38,8 @@
            <th>{% trans "Email" %}</th>
            <th>{% trans "Family Name" %}</th>
            <th>{% trans "Is Head" %}</th>
+           <th>{% trans "Edit" %}</th>
+           <th>{% trans "Delete" %}</th>
 
         </tr>
         </thead>
@@ -56,9 +58,10 @@
             <td>
                {{  user.head }}
             </td>
-{#         <th><a id="edit" href="{% url "expenses-dash:edit_expense" outlay.id %}" class="btn btn-secondary btn-sm">#}
-{#             {% trans "Edit" %}</a> </th>#}
-
+         <th><a id="edit" href="{% url "admin:accounts_user_change" user.id %}" class="btn btn-secondary btn-sm">
+             {% trans "Edit" %}</a> </th>
+         <th><a id="edit" href="{% url "admin:accounts_user_delete" user.id %}" class="btn btn-danger btn-sm">
+             {% trans "Delete" %}</a> </th>
         </tr>
         {% endfor %}
         </tbody>
