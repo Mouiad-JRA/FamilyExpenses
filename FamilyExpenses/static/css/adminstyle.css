@@ -22,7 +22,6 @@ div.breadcrumbs {
 }
 
 input[type=submit], input[type=button], .submit-row input {
-    width: 100%;
     background: #3d034d;
 }
 
@@ -31,5 +30,13 @@ input[type=submit], input[type=button], .submit-row input {
 }
 
 a:link, a:visited {
+    color: #ffffff;
+}
+
+.paginator a:link, .paginator a:visited {
+    background: #3d034d;
+
+}
+.paginator a.showall {
     color: #ffffff;
 }
