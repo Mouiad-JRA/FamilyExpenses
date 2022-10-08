@@ -48,12 +48,10 @@ def index(request):
     return render(request, 'expenses/index.html', ctx)
 
 
-class ExpenseCreateView(LoginRequiredMixin,UserFormKwargsMixin, CreateView):
+class ExpenseCreateView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
     template_name = "expenses/add_expense.html"
     success_url = 'expenses-dash:expenses'
     form_class = OutlayCreationForm
-
-
 
     def get_context_data(self, **kwargs):
         context = super(ExpenseCreateView, self).get_context_data(**kwargs)
