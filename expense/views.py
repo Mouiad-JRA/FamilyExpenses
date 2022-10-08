@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, UpdateView
 
 # from expense.forms import OutlayCreationForm, OutlayEditForm
 from expense.forms import OutlayCreationForm, OutlayEditForm
@@ -72,7 +72,7 @@ class ExpenseCreateView(CreateView):
         return reverse('expenses-dash:expenses')
 
 
-class ExpenseEditView(DetailView):
+class ExpenseEditView(UpdateView):
     template_name = "expenses/edit_expense.html"
     queryset = Outlay.objects.all()
 
@@ -90,6 +90,7 @@ class ExpenseEditView(DetailView):
         materials = Material.objects.all()
         context['outlay_types'] = outlay_types
         context['materials'] = materials
+        context['user'] = self.request.user
         return context
 
     def get_success_url(self):
