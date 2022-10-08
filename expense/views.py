@@ -1,5 +1,6 @@
 from braces.views import UserFormKwargsMixin, LoginRequiredMixin
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView
@@ -98,16 +99,16 @@ def delete_expense(request, pk):
     return redirect("expenses-dash:expenses")
 
 
-class MaterialCreateView(LoginRequiredMixin, CreateView):
-    template_name = "expenses/add_material.html"
-    form_class = MaterialCreationForm
-    success_url = reverse_lazy("expenses-dash:materials")
-
-
 class MaterialListView(ListView):
     template_name = "expenses/materials.html"
     success_url = 'expenses-dash:materials'
     queryset = Material.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.user.is_head_of_fmaily():
+            messages.error(request, "You are not the head of the Family So you can't see/add or edit any materials")
+            return render(request, "expenses/expenses.html")
+        return super(MaterialListView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         materials = self.queryset
@@ -121,11 +122,29 @@ class MaterialListView(ListView):
         return ctx
 
 
+class MaterialCreateView(LoginRequiredMixin, CreateView):
+    template_name = "expenses/add_material.html"
+    form_class = MaterialCreationForm
+    success_url = reverse_lazy("expenses-dash:materials")
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.user.is_head_of_fmaily():
+            messages.error(request, "You are not the head of the Family So you can't see/add or edit any materials")
+            return render(request, "expenses/expenses.html")
+        return super(MaterialCreateView, self).get(request, *args, **kwargs)
+
+
 class MaterialEditView(LoginRequiredMixin, UpdateView):
     template_name = "expenses/edit_materials.html"
     form_class = MaterialCreationForm
     success_url = reverse_lazy("expenses-dash:materials")
     queryset = Material.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.user.is_head_of_fmaily():
+            messages.error(request, "You are not the head of the Family So you can't see/add or edit any materials")
+            return render(request, "expenses/expenses.html")
+        return super(MaterialEditView, self).get(request, *args, **kwargs)
 
 
 def delete_material(request, pk):

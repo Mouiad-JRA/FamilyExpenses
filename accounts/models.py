@@ -19,6 +19,9 @@ class User(AbstractUser):
     def __str__(self):
         return self.name
 
+    def is_head_of_fmaily(self):
+        return self.head == self.family
+
     def set_picture(self, picture_data):
         try:
             if picture_data is not None and all(
