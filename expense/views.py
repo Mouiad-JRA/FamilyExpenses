@@ -16,6 +16,8 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 
+from userperferences.models import UserPerference
+
 
 def search_expenses(request):
     if request.method == 'POST':
@@ -51,9 +53,11 @@ class ExpenseListView(ListView):
         paginator = Paginator(expenses, 5)
         page_number = self.request.GET.get('page')
         page_obj = Paginator.get_page(paginator, page_number)
+        currency = UserPerference.objects.get(user=self.request.user).currency
         ctx = {
             'outlays': expenses,
-            'page_obj': page_obj
+            'page_obj': page_obj,
+            'currency': currency
         }
         return ctx
 
