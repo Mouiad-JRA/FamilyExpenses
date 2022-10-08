@@ -57,3 +57,12 @@ class MaterialCreationForm(forms.ModelForm):
             "is_service",
             "description",
         )
+
+
+class OutlayTypeCreationForm(forms.ModelForm):
+    class Meta:
+        model = OutlayType
+        fields = (
+            "name",
+            "description",
+        )
