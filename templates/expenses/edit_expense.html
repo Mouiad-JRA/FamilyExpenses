@@ -22,7 +22,7 @@
 </nav>
     </div>
         <div class="col-md-2">
-                     <a href="{% url "expenses-dash:delete" object.id %}" class="btn btn-danger btn-sm">
+                     <a href="{% url "expenses-dash:delete_expense" object.id %}" class="btn btn-danger btn-sm">
              {% trans "Delete" %}</a>
     </div>
 </div>
@@ -31,7 +31,7 @@
 
 <div class="card">
   <div class="card-body">
-    <form action="{% url "expenses-dash:edit" object.pk %}" method="post">
+    <form action="{% url "expenses-dash:edit_expense" object.pk %}" method="post">
         {% csrf_token %}
     {% include 'partials/_messages.html'  %}
          {{ form.errors }}

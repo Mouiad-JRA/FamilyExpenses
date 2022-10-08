@@ -1,10 +1,11 @@
 from braces.views import UserFormKwargsMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.generic import CreateView, UpdateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, UpdateView, ListView
 
-from expense.forms import OutlayCreationForm
+from accounts.models import User
+from expense.forms import OutlayCreationForm, MaterialCreationForm
 from expense.models import OutlayType, Material, Outlay
 from django.core.paginator import Paginator
 
@@ -36,16 +37,21 @@ def search_expenses(request):
     return JsonResponse(list(data), safe=False)
 
 
-def index(request):
-    expenses = Outlay.objects.filter(owner=request.user)
-    paginator = Paginator(expenses, 5)
-    page_number = request.GET.get('page')
-    page_obj = Paginator.get_page(paginator, page_number)
-    ctx = {
-        'outlays': expenses,
-        'page_obj': page_obj
-    }
-    return render(request, 'expenses/index.html', ctx)
+class ExpenseListView(ListView):
+    template_name = "expenses/expenses.html"
+    success_url = 'expenses-dash:expenses'
+    queryset = Outlay.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        expenses = self.queryset.filter(owner=self.request.user)
+        paginator = Paginator(expenses, 5)
+        page_number = self.request.GET.get('page')
+        page_obj = Paginator.get_page(paginator, page_number)
+        ctx = {
+            'outlays': expenses,
+            'page_obj': page_obj
+        }
+        return ctx
 
 
 class ExpenseCreateView(LoginRequiredMixin, UserFormKwargsMixin, CreateView):
@@ -90,3 +96,40 @@ def delete_expense(request, pk):
     expense.delete()
     messages.success(request, 'Outlay has been deleted successfully')
     return redirect("expenses-dash:expenses")
+
+
+class MaterialCreateView(LoginRequiredMixin, CreateView):
+    template_name = "expenses/add_material.html"
+    form_class = MaterialCreationForm
+    success_url = reverse_lazy("expenses-dash:materials")
+
+
+class MaterialListView(ListView):
+    template_name = "expenses/materials.html"
+    success_url = 'expenses-dash:materials'
+    queryset = Material.objects.all()
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        materials = self.queryset
+        paginator = Paginator(materials, 5)
+        page_number = self.request.GET.get('page')
+        page_obj = Paginator.get_page(paginator, page_number)
+        ctx = {
+            'materials': materials,
+            'page_obj': page_obj
+        }
+        return ctx
+
+
+class MaterialEditView(LoginRequiredMixin, UpdateView):
+    template_name = "expenses/edit_materials.html"
+    form_class = MaterialCreationForm
+    success_url = reverse_lazy("expenses-dash:materials")
+    queryset = Material.objects.all()
+
+
+def delete_material(request, pk):
+    material = Material.objects.get(pk=pk)
+    material.delete()
+    messages.success(request, 'Material has been deleted successfully')
+    return redirect("expenses-dash:materials")
