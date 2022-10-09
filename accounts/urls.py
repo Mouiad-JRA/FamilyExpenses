@@ -1,8 +1,7 @@
+from django.urls import path, include
 
-from django.urls import path
-
-from .views import RegisterView,UserLogin, UsernameValidationView, UserEmailValidationView,\
-    UserFamilyValidationView, UserHeadValidationView, PasswordValidationView, LogoutView
+from .views import RegisterView, UserLogin, UsernameValidationView, UserEmailValidationView, \
+    UserFamilyValidationView, UserHeadValidationView, PasswordValidationView, LogoutView, password_reset_request
 from django.views.decorators.csrf import csrf_exempt
 
 app_name = "account"
@@ -15,6 +14,7 @@ urlpatterns = [
     path('validate-family-head/', csrf_exempt(UserHeadValidationView.as_view()), name='validate-family-head'),
     path('validate-password/', csrf_exempt(PasswordValidationView.as_view()), name='validate-password'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path("password_reset", password_reset_request, name="password_reset"),
+
 
 ]
-

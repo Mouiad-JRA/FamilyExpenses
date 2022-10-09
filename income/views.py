@@ -23,7 +23,10 @@ class IncomeListView(ListView):
         paginator = Paginator(incomes, 5)
         page_number = self.request.GET.get('page')
         page_obj = Paginator.get_page(paginator, page_number)
-        currency = UserPerference.objects.get(user=self.request.user).currency
+        try:
+            currency = UserPerference.objects.get(user=self.request.user).currency
+        except:
+            currency = None
         ctx = {
             'incomes': incomes,
             'page_obj': page_obj,
