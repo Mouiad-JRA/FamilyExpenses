@@ -5,9 +5,20 @@
 {% endblock %}
 
 {% block content  %}
-<div class="container" mt-4>
 
-<div class="row">
+
+            <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+
+            <a type="button" class="btn btn-sm btn-outline-secondary">{% trans 'Download PDF' %}</a>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar" class="align-text-bottom"></span>
+            {% trans 'This week' %}
+          </button>
+        </div>
+    <br/>
+    <div class="row">
     <div class="col-md-10" style="position: inherit">
         <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -25,10 +36,53 @@
            class="btn btn-primary">{% trans 'Back' %}</a>
     </div>
 </div>
-    <br/>
+<div class="container" mt-4>
 
-</div>
-{#<script src="{% static "js/searchOutlays.js" %}">#}
+<h2>Expense List</h2>
+
+   <div class="app-table">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+             <th>{% trans "Price"%}</th>
+           <th>{% trans "Outlay Type" %}</th>
+           <th>{% trans "Material" %}</th>
+           <th>{% trans "Description" %}</th>
+            <th>{% trans "Date" %}</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for outlay in object_list %}
+        <tr>
+            <td>
+                {{ outlay.price }}
+            </td>
+            <td>
+                {{ outlay.outlay_type }}
+            </td>
+            <td>
+                {{ outlay.material }}
+            </td>
+            <td>
+               {{  outlay.description }}
+            </td>
+            <td>
+                {{ outlay.date }}
+            </td>
+
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+   <h3>{% trans "Total: " %} {{ total }}</h3>
+   </div>
+
+<script>
+
 
 </script>
 {% endblock %}

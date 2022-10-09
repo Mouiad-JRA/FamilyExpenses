@@ -379,11 +379,14 @@ class UserCreateView(CreateView):
 # return Response(response)
 
 class ExpensesChartList(ListView):
-    """DashBoard Order List view."""
-
-    form_class = OutlayCreationForm
+    """ Expense List view."""
 
     template_name = 'expenses/outlay_list.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        ctx = super(ExpensesChartList, self).get_context_data()
+        ctx['total'] = self.get_queryset().aggregate(total=Sum('price'))['total']
+        return ctx
 
     def get_queryset(self):
         queryset = Outlay.objects.all()
@@ -403,7 +406,3 @@ class ExpensesChartList(ListView):
             q_name.add(Q(date__year=year), Q.AND)
 
         return queryset.filter(q_name)
-
-
-def stats_view(request):
-    return render(request, 'expenses/outlay_list.html')
