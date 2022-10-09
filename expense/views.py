@@ -1,14 +1,20 @@
 from braces.views import UserFormKwargsMixin, LoginRequiredMixin
 from django.contrib import messages
-from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
+from django.db.models import Sum, Q
+
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from accounts.forms import CustomUserCreationForm
 from accounts.models import User, Family
-from accounts.views import RegisterView
+from datetime import datetime as dt
+from dateutil.relativedelta import relativedelta
 from expense.forms import OutlayCreationForm, MaterialCreationForm, OutlayTypeCreationForm
 from expense.models import OutlayType, Material, Outlay
 from django.core.paginator import Paginator
@@ -16,6 +22,7 @@ from django.core.paginator import Paginator
 import json
 from django.http import JsonResponse
 
+from expense.serializers import OutlaySerializer
 from userperferences.models import UserPerference
 
 
@@ -292,3 +299,104 @@ class UserCreateView(CreateView):
         messages.success(request, self.success_message)
 
         return super(UserCreateView, self).post(request, *args, **kwargs)
+
+
+# class ExpensesChartList(APIView):
+#     """ Expenses Chart view."""
+#     model = Outlay
+#
+#     # permission_classes = [IsAuthenticated, IsAdminUser]
+#
+#     def get(self, request, *args, **kwargs):
+#         queryset = Outlay.objects.all()
+#         current_date = dt.today()
+#         type = self.request.query_params.get("type", None)
+#         month_or_year = int(self.request.query_params.get("number", None))
+#         if self.request.user:
+#             queryset = queryset.filter(owner=self.request.user)
+#         user = self.request.query_params.get("user", None)
+#         if user is not None:
+#             queryset = queryset.filter(owner=user)
+#         response = {}
+#         data = {}
+#
+#         if type:
+#             if type == 'month':
+#                 current_date = current_date - relativedelta(months=month_or_year)
+#                 result = {}
+#                 expenses_total = queryset.filter(date__month=current_date.date().month,
+#                                                  date__year=current_date.date().year).aggregate(total=Sum('price'))['total']
+#                 expenses = queryset.filter(date__month=current_date.date().month,
+#                                            date__year=current_date.date().year)
+#                 if not expenses_total:
+#                     expenses_total = 0
+#                 if not expenses.exists():
+#                     expenses = []
+#                 expenses = OutlaySerializer(expenses, many=True).data
+#                 result.update({f"Expenses Total in {current_date.strftime('%B')}": expenses_total})
+#                 result.update({f"Expenses in {current_date.strftime('%B')}": expenses})
+#                 data.update({current_date.strftime("%B"): result})
+#
+#             elif type == 'year':
+#                 current_date = current_date - relativedelta(years=month_or_year)
+#                 result = {}
+#
+#                 expenses_total = queryset.filter(date__year=current_date.date().year).aggregate(
+#                     total=Sum('price'))['total']
+#                 expenses = queryset.filter(date__year=current_date.date().year)
+#                 if not expenses_total:
+#                     expenses_total = 0
+#                 if not expenses.exists():
+#                     expenses = []
+#                 expenses = OutlaySerializer(expenses, many=True).data
+#                 result.update({f"Expenses Total in {current_date.year}": expenses_total})
+#                 result.update({f"Expenses in {current_date.year}": expenses})
+#                 data.update({current_date.year: result})
+
+
+        # previous_offset = offset + page_size
+        # next_offset = offset - page_size if offset > 0 else None
+        #
+        # response.update(
+        #     {
+        #         'previous': f"{request.build_absolute_uri(reverse('expenses-dash:expenses-chart-list'))}"
+        #                     f"?type={type}&limit={page_size}&offset={previous_offset}"
+        #
+        #     },
+        # )
+        # response.update(
+        #     {
+        #         'next': f"{request.build_absolute_uri(reverse('expenses-dash:expenses-chart-list'))}?"
+        #                 f"type={type}&limit={page_size}&offset={next_offset}"
+        #
+        #         if next_offset is not None else None
+        #     }
+        # )
+        # response.update({'data': data})
+        # return Response(response)
+
+class ExpensesChartList(generics.ListAPIView):
+    """DashBoard Order List view."""
+
+    serializer_class = OutlaySerializer
+    # permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get_queryset(self):
+        queryset = Outlay.objects.all()
+        if self.request.user:
+            queryset = queryset.filter(owner=self.request.user)
+        user = self.request.query_params.get("user", None)
+        if user is not None:
+            queryset = queryset.filter(owner=user)
+        q_name = Q()
+
+        month = self.request.query_params.get("month", None)
+        if month:
+            q_name.add(Q(date__month=month), Q.AND)
+
+        year = self.request.query_params.get("year", None)
+        if year:
+            q_name.add(Q(date__year=year), Q.AND)
+
+        return queryset.filter(q_name)
+

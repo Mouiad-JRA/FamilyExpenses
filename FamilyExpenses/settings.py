@@ -21,6 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'allauth',
     'crispy_forms',
+    'django_extensions',
+    'rest_framework',
 
 
 
