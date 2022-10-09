@@ -179,7 +179,7 @@ def password_reset_request(request):
             if associated_users.exists():
                 for user in associated_users:
                     subject = "Password Reset Requested"
-                    email_template_name = "accounts/password/password_reset_email.txt"
+                    email_template_name = "accounts/password/password_reset_email.html"
                     c = {
                         "email": user.email,
                         'domain': '127.0.0.1:8000',
