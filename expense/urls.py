@@ -2,7 +2,8 @@ from django.urls import path
 
 from expense.views import delete_expense, ExpenseCreateView, ExpenseEditView, search_expenses, \
     MaterialCreateView, ExpenseListView, MaterialListView, MaterialEditView, delete_material, OutlayTypeListView, \
-    OutlayTypeCreateView, OutlayTypeEditView, delete_outlaytype, UserListView, UserCreateView, ExpensesChartList
+    OutlayTypeCreateView, OutlayTypeEditView, delete_outlaytype, UserListView, UserCreateView, ExpensesChartList, \
+    stats_view
 from django.views.decorators.csrf import csrf_exempt
 
 app_name = "expenses-dash"
@@ -34,4 +35,5 @@ urlpatterns = [
 
     # Chart
     path("expenses-chart-list/", ExpensesChartList.as_view(), name="expenses-chart-list"),
+    path("stats/", stats_view, name="stats"),
 ]

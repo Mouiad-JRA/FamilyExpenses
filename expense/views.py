@@ -1,3 +1,5 @@
+import datetime
+
 from braces.views import UserFormKwargsMixin, LoginRequiredMixin
 from django.contrib import messages
 from django.db.models import Sum, Q
@@ -7,6 +9,7 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView
 from rest_framework import generics
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -354,49 +357,53 @@ class UserCreateView(CreateView):
 #                 data.update({current_date.year: result})
 
 
-        # previous_offset = offset + page_size
-        # next_offset = offset - page_size if offset > 0 else None
-        #
-        # response.update(
-        #     {
-        #         'previous': f"{request.build_absolute_uri(reverse('expenses-dash:expenses-chart-list'))}"
-        #                     f"?type={type}&limit={page_size}&offset={previous_offset}"
-        #
-        #     },
-        # )
-        # response.update(
-        #     {
-        #         'next': f"{request.build_absolute_uri(reverse('expenses-dash:expenses-chart-list'))}?"
-        #                 f"type={type}&limit={page_size}&offset={next_offset}"
-        #
-        #         if next_offset is not None else None
-        #     }
-        # )
-        # response.update({'data': data})
-        # return Response(response)
+# previous_offset = offset + page_size
+# next_offset = offset - page_size if offset > 0 else None
+#
+# response.update(
+#     {
+#         'previous': f"{request.build_absolute_uri(reverse('expenses-dash:expenses-chart-list'))}"
+#                     f"?type={type}&limit={page_size}&offset={previous_offset}"
+#
+#     },
+# )
+# response.update(
+#     {
+#         'next': f"{request.build_absolute_uri(reverse('expenses-dash:expenses-chart-list'))}?"
+#                 f"type={type}&limit={page_size}&offset={next_offset}"
+#
+#         if next_offset is not None else None
+#     }
+# )
+# response.update({'data': data})
+# return Response(response)
 
-class ExpensesChartList(generics.ListAPIView):
+class ExpensesChartList(ListView):
     """DashBoard Order List view."""
 
-    serializer_class = OutlaySerializer
-    # permission_classes = [IsAuthenticated, IsAdminUser]
+    form_class = OutlayCreationForm
+
+    template_name = 'expenses/outlay_list.html'
 
     def get_queryset(self):
         queryset = Outlay.objects.all()
         if self.request.user:
             queryset = queryset.filter(owner=self.request.user)
-        user = self.request.query_params.get("user", None)
+        user = self.request.GET.get("user", None)
         if user is not None:
             queryset = queryset.filter(owner=user)
         q_name = Q()
 
-        month = self.request.query_params.get("month", None)
+        month = self.request.GET.get("month", None)
         if month:
             q_name.add(Q(date__month=month), Q.AND)
 
-        year = self.request.query_params.get("year", None)
+        year = self.request.GET.get("year", None)
         if year:
             q_name.add(Q(date__year=year), Q.AND)
 
         return queryset.filter(q_name)
 
+
+def stats_view(request):
+    return render(request, 'expenses/outlay_list.html')
