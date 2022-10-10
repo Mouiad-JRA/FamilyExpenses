@@ -87,9 +87,51 @@
      <h3>{% trans "There is No Expense for the requested Year/Month " %}</h3>
    {% endif %}
    </div>
+   {% if user_count > 0 %}
+ <div class="app-table-1">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr>
+             <th>{% trans "Price"%}</th>
+           <th>{% trans "Outlay Type" %}</th>
+           <th>{% trans "Material" %}</th>
+           <th>{% trans "Description" %}</th>
+            <th>{% trans "Date" %}</th>
 
-<script>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for outlay in outlay_user_count %}
+        <tr>
+            <td>
+                {{ outlay.price }}
+            </td>
+            <td>
+                {{ outlay.outlay_type }}
+            </td>
+            <td>
+                {{ outlay.material }}
+            </td>
+            <td>
+               {{  outlay.description }}
+            </td>
+            <td>
+                {{ outlay.date }}
+            </td>
 
 
-</script>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+  {% if outlay_total_user_count %}
+    <h3>{% trans "Total: " %} {{ outlay_total_user_count }}</h3>
+   {% else %}
+     <h3>{% trans "There is No Expense for the requested Year/Month " %}</h3>
+   {% endif %}
+   </div>
+{%  endif  %}
+
 {% endblock %}

@@ -386,6 +386,14 @@ class ExpensesChartList(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         ctx = super(ExpensesChartList, self).get_context_data()
         ctx['total'] = self.get_queryset().aggregate(total=Sum('price'))['total']
+        os = Outlay.objects.all()
+        users = User.objects.all()
+        data = {}
+        for index, user in enumerate(users):
+            data.update({f"outlay_{index}": os.filter(owner=user)})
+            data.update({f"outlay_total_{index}": os.filter(owner=user).aggregate(total=Sum('price'))['total']})
+        ctx['user_count'] = users.count()
+        ctx['all'] = data
         return ctx
 
     def get_queryset(self):
