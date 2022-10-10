@@ -15,7 +15,7 @@ It's written with Django 4.1.1 and python 3.9 in mind.
 
 * User registration, logging in and logout
 
-* Create a head of family family member
+* Create a head of family member
 
 * Head of the family can add or modify materials
 
