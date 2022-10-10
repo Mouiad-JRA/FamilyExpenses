@@ -1,11 +1,20 @@
 import os.path
+from os.path import abspath, basename, dirname, join, normpath
+from sys import path
+
 from pathlib import Path
 
 from django.contrib import messages
 from django.urls import reverse_lazy
+import environ
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = dirname(dirname(__file__) + "../../../")
 
+CONFIG_ROOT = dirname(dirname(abspath(__file__)))
+PROJECT_ROOT = dirname(CONFIG_ROOT)
+
+env = environ.Env()
+env.read_env(env_file=join(PROJECT_ROOT, ".env"))
 SECRET_KEY = 'django-insecure-_w7$ih&fr7xpkfm!qh7ka4@joc_b#9!%56x5%^)-yg%mylhg#!'
 
 DEBUG = True
@@ -23,8 +32,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_extensions',
     'rest_framework',
-
-
 
     'expense',
     'accounts',
@@ -47,8 +54,7 @@ ROOT_URLCONF = 'FamilyExpenses.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        "DIRS": [BASE_DIR, normpath(join(PROJECT_ROOT, "templates"))],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,8 +73,15 @@ AUTH_USER_MODEL = 'accounts.User'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env.str("DB_NAME", ""),
+        'USER': env.str("DB_USER", ""),
+        'PASSWORD': env.str("DB_USER_PASSWORD", ""),
+        'HOST': env.str("DB_HOST", ""),
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
@@ -105,7 +118,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'FamilyExpenses/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'uploads'
+MEDIA_ROOT = [BASE_DIR, normpath(join(PROJECT_ROOT, "templates"))]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SMTP_ENABLED = True
@@ -115,7 +128,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'expenseq@gmail.com'
 EMAIL_HOST_PASSWORD = 'dwkscokpbzcrmzkq'
-
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
