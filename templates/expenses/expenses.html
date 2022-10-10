@@ -5,6 +5,31 @@
 {% endblock %}
 
 {% block content  %}
+
+                <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+
+            <div class="form-group">
+               <input h type="text" class="form-control" id="id_month" placeholder="Enter Month Number"/>
+                <br/>
+                <br/>
+                  <a href="{% url 'expenses-dash:export_pdf' %}"
+        button type="button" class="btn btn-sm btn-outline-secondary form-control" id="month_id">{% trans 'Genrate Month Report' %}</a>
+            </div>
+         <div class="form-group">
+
+ <input type="text" class="form-control" id="id_year" placeholder="Enter Year Number" />
+             <br>
+             <br>
+                       <a href="{% url 'expenses-dash:export_pdf' %}"
+        button type="button" class="btn btn-sm btn-outline-secondary form-control " id="year_id">{% trans 'Genrate Year Report' %}</a>
+            </div>
+
+
+          </div>
+        </div>
+
+
 <div class="container" mt-4>
 
 <div class="row">
@@ -129,7 +154,25 @@
    {% endif %}
 </div>
 </div>
-<script src="{% static "js/searchOutlays.js" %}">
+    <script src="{% static "js/searchOutlays.js" %}"></script>
+    <script>
 
+
+  document.querySelector("#id_year").addEventListener("input", function(){
+
+      let year =  document.querySelector("#id_year").value;
+      let button =   document.querySelector('#year_id')
+      let newHref = button.href.slice(0, button.href.lastIndexOf('/'))+ `/?year=${year}`
+      button.href= newHref
+
+  });
+  document.querySelector("#id_month").addEventListener("input", function(){
+
+      let month =  document.querySelector("#id_month").value;
+      let button =   document.querySelector('#month_id')
+      let newHref = button.href.slice(0, button.href.lastIndexOf('/'))+ `/?month=${month}`
+      button.href= newHref
+
+  });
 </script>
 {% endblock %}

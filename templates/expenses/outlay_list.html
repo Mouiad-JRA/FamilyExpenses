@@ -5,37 +5,40 @@
 {% endblock %}
 
 {% block content  %}
+<style>
+ @page {
+     		size: A4;
+     		margin: 0;
+            padding: 0;
 
+     	}
+
+		.btn:hover,
+		.btn:focus {background: #e3e3e3 !important; color: #0082ca !important;}
+		ul.social-icons li:hover { opacity: 0.8; }
+		li {
+			margin-left: 0!important;
+			margin-right: 0!important;
+            line-break: anywhere;
+
+		}
+        h1 {display: none}
+        p {line-height: 1.5 !important;}
+        .btn {font-size: 10px !important; padding: 10px 10px !important;}
+
+
+	</style>
+</style>
 
             <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group me-2">
 
-            <a type="button" class="btn btn-sm btn-outline-secondary">{% trans 'Download PDF' %}</a>
+            <a type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">{% trans 'Download PDF' %}</a>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar" class="align-text-bottom"></span>
-            {% trans 'This week' %}
-          </button>
+
         </div>
     <br/>
-    <div class="row">
-    <div class="col-md-10" style="position: inherit">
-        <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="">{% trans ' Summery Epenses' %}</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            {% trans 'Expenses Summery' %}
-        </li>
-    </ol>
-</nav>
-        </div>
-    <div class="col-md-2">
-        <a href="{% url 'expenses-dash:expenses' %}"
-           class="btn btn-primary">{% trans 'Back' %}</a>
-    </div>
-</div>
+
 <div class="container" mt-4>
 
 <h2>Expense List</h2>
@@ -78,7 +81,11 @@
 
         </tbody>
     </table>
-   <h3>{% trans "Total: " %} {{ total }}</h3>
+  {% if total %}
+    <h3>{% trans "Total: " %} {{ total }}</h3>
+   {% else %}
+     <h3>{% trans "There is No Expense for the requested Year/Month " %}</h3>
+   {% endif %}
    </div>
 
 <script>
