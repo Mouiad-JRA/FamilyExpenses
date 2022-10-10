@@ -5,14 +5,14 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import LoginView
 from django.db.models import Q
-from django.forms import forms
+
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from django.views.generic.edit import CreateView
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import logout
 
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
@@ -21,9 +21,9 @@ from django.views import View
 from django.core.validators import validate_email
 from accounts.forms import CustomUserCreationForm
 from accounts.models import User, Family
-from django.core.mail import EmailMessage, send_mail, BadHeaderError
+from django.core.mail import send_mail, BadHeaderError
 
-from django.contrib.auth import views as auth_views
+
 
 
 class UsernameValidationView(View):
