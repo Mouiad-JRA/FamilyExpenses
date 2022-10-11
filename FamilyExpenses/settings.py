@@ -14,7 +14,7 @@ CONFIG_ROOT = dirname(dirname(abspath(__file__)))
 PROJECT_ROOT = dirname(CONFIG_ROOT)
 
 env = environ.Env()
-env.read_env(env_file=join(PROJECT_ROOT, ".env"))
+env.read_env(env_file=join(CONFIG_ROOT, ".env"))
 SECRET_KEY = 'django-insecure-_w7$ih&fr7xpkfm!qh7ka4@joc_b#9!%56x5%^)-yg%mylhg#!'
 
 DEBUG = True
